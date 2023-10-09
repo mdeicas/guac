@@ -227,6 +227,10 @@ func Test_depsCollector_RetrieveArtifacts(t *testing.T) {
 			if c.Type() != DepsCollector {
 				t.Errorf("g.Type() = %s, want %s", c.Type(), DepsCollector)
 			}
+			if len(collectedDocs) != len(tt.want) {
+				t.Errorf("Wanted %v elements, but got %v", len(tt.want), len(collectedDocs))
+			}
+
 			for i := range collectedDocs {
 				collectedDocs[i].Blob, err = normalizeTimeStampAndScorecard(collectedDocs[i].Blob)
 				if err != nil {
