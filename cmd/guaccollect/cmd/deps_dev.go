@@ -21,6 +21,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/guacsec/guac/pkg/cli"
 	csubclient "github.com/guacsec/guac/pkg/collectsub/client"
 	"github.com/guacsec/guac/pkg/collectsub/datasource"
 	"github.com/guacsec/guac/pkg/collectsub/datasource/csubsource"
@@ -116,5 +117,15 @@ func validateDepsDevFlags(natsAddr string, csubAddr string, useCsub bool, poll b
 }
 
 func init() {
+	set, err := cli.BuildFlags([]string{"retrieve-dependencies"})
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "failed to setup flag: %v", err)
+		os.Exit(1)
+	}
+	depsDevCmd.PersistentFlags().AddFlagSet(set)
+	if err := viper.BindPFlags(depsDevCmd.PersistentFlags()); err != nil {
+		fmt.Fprintf(os.Stderr, "failed to bind flags: %v", err)
+		os.Exit(1)
+	}
 	rootCmd.AddCommand(depsDevCmd)
 }
