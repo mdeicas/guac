@@ -73,6 +73,10 @@ func VcsToSrc(vcsUri string) (*model.SourceInputSpec, error) {
 	}
 
 	m.Name = sp[0]
+
+	// remove this suffix because it causes some deps.dev queries to fail
+	m.Name = strings.TrimSuffix(m.Name, ".git")
+
 	if len(sp) == 2 {
 		tag := sp[1]
 		if isCommit(tag) {

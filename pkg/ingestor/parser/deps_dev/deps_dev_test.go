@@ -153,7 +153,7 @@ func Test_depsDevParser_Parse(t *testing.T) {
 					Src: &model.SourceInputSpec{
 						Type:      "git",
 						Namespace: "github.com/facebook",
-						Name:      "react.git",
+						Name:      "react",
 					},
 					HasSourceAt: &model.HasSourceAtInputSpec{
 						KnownSince:    tm.UTC(),
@@ -175,7 +175,7 @@ func Test_depsDevParser_Parse(t *testing.T) {
 					Src: &model.SourceInputSpec{
 						Type:      "git",
 						Namespace: "github.com/lydell",
-						Name:      "js-tokens.git",
+						Name:      "js-tokens",
 					},
 					HasSourceAt: &model.HasSourceAtInputSpec{
 						KnownSince:    tm.UTC(),
@@ -197,7 +197,7 @@ func Test_depsDevParser_Parse(t *testing.T) {
 					Src: &model.SourceInputSpec{
 						Type:      "git",
 						Namespace: "github.com/sindresorhus",
-						Name:      "object-assign.git",
+						Name:      "object-assign",
 					},
 					HasSourceAt: &model.HasSourceAtInputSpec{
 						KnownSince:    tm.UTC(),
@@ -404,7 +404,7 @@ func Test_depsDevParser_Parse(t *testing.T) {
 					Src: &model.SourceInputSpec{
 						Type:      "git",
 						Namespace: "github.com/yargs",
-						Name:      "yargs-parser.git",
+						Name:      "yargs-parser",
 					},
 					HasSourceAt: &model.HasSourceAtInputSpec{
 						KnownSince:    tm.UTC(),
@@ -427,7 +427,7 @@ func Test_depsDevParser_Parse(t *testing.T) {
 					Src: &model.SourceInputSpec{
 						Type:      "git",
 						Namespace: "github.com/sindresorhus",
-						Name:      "camelcase.git",
+						Name:      "camelcase",
 					},
 					HasSourceAt: &model.HasSourceAtInputSpec{
 						KnownSince:    tm.UTC(),

@@ -80,6 +80,10 @@ func TestVcsUriToSrc(t *testing.T) {
 			uri:     "github.com/kubernetes@@main",
 			wantErr: true,
 		},
+		{
+			uri:      "git+https://github.com/xtuc/webassemblyjs.git",
+			expected: src("git", "github.com/xtuc", "webassemblyjs", nil, nil),
+		},
 	}
 	for _, tt := range testCases {
 		t.Run(fmt.Sprintf("parsing %s", tt.uri), func(t *testing.T) {

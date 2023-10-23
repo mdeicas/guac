@@ -568,7 +568,7 @@ func (d *depsCollector) collectAdditionalMetadata(ctx context.Context, pkgType s
 				logger.Debugf("The project key was not found in the map: %v", projectReq.ProjectKey)
 				project, err = d.client.GetProject(ctx, projectReq)
 				if err != nil {
-					logger.Debugf("unable to get project for: %v, error: %v", projectReq.ProjectKey.Id, err)
+					logger.Debugf("Error fetching project for project key id %v: %v", projectReq.ProjectKey.GetId(), err)
 					continue
 				}
 			}
@@ -651,12 +651,14 @@ func (d *depsCollector) getProjects(ctx context.Context, inputChannel <-chan *pb
 	projectMap := sync.Map{}
 	var waitGroup sync.WaitGroup
 
+	logger := logging.FromContext(ctx)
 	for input := range inputChannel {
 		go func(input *pb.ProjectKey) {
 			defer waitGroup.Done()
 
 			project, fetchErr := d.getProject(ctx, input)
 			if fetchErr != nil {
+				logger.Debugf("Error fetching project for project key id %v: %v", input.GetId(), fetchErr)
 				return
 			}
 			projectMap.Store(input, project)
