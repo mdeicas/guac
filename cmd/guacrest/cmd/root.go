@@ -32,20 +32,30 @@ var flags = struct {
 
 	tlsCertFile string
 	tlsKeyFile  string
+
+  dbDirectConnection bool
+  dbDriver string
+  dbAddress string 
 }{}
 
 var rootCmd = &cobra.Command{
-	Use:   "guacrest",
-	Short: "Guac REST API Server",
-	Long: "The Guac REST API Server provides usable and analysis-focused endpoints. " +
-		"It is backed by the GraphQL API Server, which must be running for this server " +
-		"to work.",
+	Use:     "guacrest",
+	Short:   "Guac REST API Server",
+  Long: "The Guac REST API Server provides usable and analysis-focused endpoints.\n\n " + 
+        "The GraphQL API Server is the default data backend for the REST" +
+        "API. However, some endpoints are optimized and can connect directly to the " +
+        "database that backs the GraphQL API. For now, only Ent is supported. " +
+        "To enable this, specify the db-direct-connection flag.",
 	Version: version.Version,
 	Run: func(command *cobra.Command, args []string) {
 		flags.restAPIServerPort = viper.GetInt("rest-api-server-port")
 		flags.gqlServerAddress = viper.GetString("gql-addr")
 		flags.tlsCertFile = viper.GetString("rest-api-tls-cert-file")
 		flags.tlsKeyFile = viper.GetString("rest-api-tls-key-file")
+
+    flags.dbDirectConnection = viper.GetBool("db-direct-connection")
+    flags.dbDriver = viper.GetString("db-driver")
+    flags.dbAddress = viper.GetString("db-address")
 
 		startServer()
 	},
@@ -60,9 +70,17 @@ func Execute() {
 
 func init() {
 	cobra.OnInitialize(cli.InitConfig)
-	set, err := cli.BuildFlags([]string{"gql-addr", "rest-api-server-port", "rest-api-tls-cert-file", "rest-api-tls-key-file"})
+	set, err := cli.BuildFlags([]string{
+    "gql-addr",
+    "rest-api-server-port",
+    "rest-api-tls-cert-file",
+    "rest-api-tls-key-file",
+    "db-direct-connection",
+    "db-driver",
+    "db-address",
+  })
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "failed to setup flag: %v", err)
+		fmt.Fprintf(os.Stderr, "failed to setup flags: %v", err)
 		os.Exit(1)
 	}
 

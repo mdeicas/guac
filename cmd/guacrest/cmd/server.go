@@ -17,6 +17,7 @@ package cmd
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"net/http"
 	"os"
@@ -25,8 +26,12 @@ import (
 	"syscall"
 	"time"
 
+	"entgo.io/ent/dialect"
+	dialectsql "entgo.io/ent/dialect/sql"
+
 	"github.com/Khan/genqlient/graphql"
 	"github.com/go-chi/chi"
+	"github.com/guacsec/guac/pkg/assembler/backends/ent"
 	gen "github.com/guacsec/guac/pkg/guacrest/generated"
 	"github.com/guacsec/guac/pkg/guacrest/server"
 	"github.com/guacsec/guac/pkg/logging"
@@ -40,7 +45,8 @@ func startServer() {
 	logger := logging.FromContext(ctx)
 
 	gqlClient := getGraphqlServerClientOrExit(ctx)
-	handler := server.NewDefaultServer(gqlClient)
+
+	handler := getHandlerOrExit(ctx, gqlClient)
 	handlerWrapper := gen.NewStrictHandler(handler, nil)
 	router := chi.NewRouter()
 	router.Mount("/", gen.Handler(handlerWrapper))
@@ -87,6 +93,37 @@ func startServer() {
 		server.Close()
 	}
 	cf()
+}
+
+// get the service handler
+// if an ent address is provided, get the handler backed by a direct connection 
+// to ent
+func getHandlerOrExit(ctx context.Context, gqlClient graphql.Client) gen.StrictServerInterface {
+	logger := logging.FromContext(ctx)
+	if flags.dbDirectConnection {
+		logger.Infof("Directly connecting to the Ent backend for optimized implementations")
+		ent := getEntClientOrExit(ctx)
+		handler := server.NewEntConnectedServer(ent, gqlClient)
+		return handler
+	}
+	return server.NewDefaultServer(gqlClient)
+}
+
+func getEntClientOrExit(ctx context.Context) *ent.Client {
+	logger := logging.FromContext(ctx)
+
+  if flags.dbDriver != dialect.Postgres {
+    logger.Warnf("Only Postgres is currently supported by Ent")
+    os.Exit(1)
+  }
+
+	db, err := sql.Open(flags.dbDriver, flags.dbAddress)
+	if err != nil {
+		logger.Warnf("error opening db: %w", err)
+    os.Exit(1)
+	}
+
+	return ent.NewClient(ent.Driver(dialectsql.OpenDB(flags.dbDriver, db)))
 }
 
 // get the graphql client and test the connection

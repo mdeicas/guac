@@ -41,7 +41,7 @@ func (s *DefaultServer) AnalysisDependencies(ctx context.Context, request gen.An
 	// 		PurlList:       []gen.Purl{},
 	// 		PaginationInfo: gen.PaginationInfo{},
 	// 	},
-	return nil, fmt.Errorf("Unimplemented")
+	return nil, fmt.Errorf("AnalysisDependencies unimplemented for Default")
 }
 
 func (s *DefaultServer) RetrieveDependencies(ctx context.Context, request gen.RetrieveDependenciesRequestObject) (gen.RetrieveDependenciesResponseObject, error) {
@@ -51,5 +51,6 @@ func (s *DefaultServer) RetrieveDependencies(ctx context.Context, request gen.Re
 	// 		PaginationInfo: gen.PaginationInfo{},
 	// 	},
 	// }, nil
-	return nil, fmt.Errorf("Unimplemented")
+	return nil, fmt.Errorf("RetrieveDependencies unimplemented for Default")
 }
+
