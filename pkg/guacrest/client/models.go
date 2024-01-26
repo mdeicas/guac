@@ -11,11 +11,32 @@ const (
 
 // Error defines model for Error.
 type Error struct {
-	Message string `json:"message"`
+	Message string `json:"Message"`
+}
+
+// PageInfo defines model for PageInfo.
+type PageInfo struct {
+	EndCursor       string `json:"EndCursor"`
+	HasNextPage     bool   `json:"HasNextPage"`
+	HasPreviousPage bool   `json:"HasPreviousPage"`
+	StartCursor     string `json:"StartCursor"`
+}
+
+// PaginationInfo defines model for PaginationInfo.
+type PaginationInfo struct {
+	PageInfo   PageInfo `json:"PageInfo"`
+	TotalCount int      `json:"TotalCount"`
 }
 
 // Purl defines model for Purl.
 type Purl = string
+
+// PaginationSpec defines model for PaginationSpec.
+type PaginationSpec struct {
+	After  *string `json:"After,omitempty"`
+	Before *string `json:"Before,omitempty"`
+	First  *int    `json:"First,omitempty"`
+}
 
 // BadGateway defines model for BadGateway.
 type BadGateway = Error
@@ -27,10 +48,16 @@ type BadRequest = Error
 type InternalServerError = Error
 
 // PurlList defines model for PurlList.
-type PurlList = []Purl
+type PurlList struct {
+	PaginationInfo PaginationInfo `json:"PaginationInfo"`
+	PurlList       []Purl         `json:"PurlList"`
+}
 
 // AnalysisDependenciesParams defines parameters for AnalysisDependencies.
 type AnalysisDependenciesParams struct {
+	// PaginationSpec The pagination configuration for the query
+	PaginationSpec *PaginationSpec `form:"PaginationSpec,omitempty" json:"PaginationSpec,omitempty"`
+
 	// Sort The sort order of the packages
 	//   * 'frequency' - The packages with the highest number of dependents
 	//   * 'scorecard' - The packages with the lowest OpenSSF scorecard score
@@ -42,6 +69,9 @@ type AnalysisDependenciesParamsSort string
 
 // RetrieveDependenciesParams defines parameters for RetrieveDependencies.
 type RetrieveDependenciesParams struct {
+	// PaginationSpec The pagination configuration for the query
+	PaginationSpec *PaginationSpec `form:"PaginationSpec,omitempty" json:"PaginationSpec,omitempty"`
+
 	// Purl the purl of the dependent package
 	Purl string `form:"purl" json:"purl"`
 }

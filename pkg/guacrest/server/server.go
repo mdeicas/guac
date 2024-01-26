@@ -36,15 +36,20 @@ func (s *DefaultServer) HealthCheck(ctx context.Context, request gen.HealthCheck
 }
 
 func (s *DefaultServer) AnalysisDependencies(ctx context.Context, request gen.AnalysisDependenciesRequestObject) (gen.AnalysisDependenciesResponseObject, error) {
-	//return gen.AnalysisDependencies200JSONResponse{
-	//  PurlListJSONResponse: []gen.Purl{},
-	//}, nil
+	// return gen.AnalysisDependencies200JSONResponse{
+	// 	PurlListJSONResponse: gen.PurlListJSONResponse{
+	// 		PurlList:       []gen.Purl{},
+	// 		PaginationInfo: gen.PaginationInfo{},
+	// 	},
 	return nil, fmt.Errorf("Unimplemented")
 }
 
 func (s *DefaultServer) RetrieveDependencies(ctx context.Context, request gen.RetrieveDependenciesRequestObject) (gen.RetrieveDependenciesResponseObject, error) {
-	//return gen.RetrieveDependencies200JSONResponse{
-	//  PurlListJSONResponse: []string{},
-	//}, nil
+	// return gen.RetrieveDependencies200JSONResponse{
+	// 	PurlListJSONResponse: gen.PurlListJSONResponse{
+	// 		PurlList:       []gen.Purl{},
+	// 		PaginationInfo: gen.PaginationInfo{},
+	// 	},
+	// }, nil
 	return nil, fmt.Errorf("Unimplemented")
 }

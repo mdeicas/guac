@@ -33,6 +33,7 @@ paths:
       summary: Retrieve the dependencies of a package
       operationId: retrieveDependencies
       parameters:
+        - $ref: "#/components/parameters/PaginationSpec"
         - name: purl
           description: the purl of the dependent package
           in: query
@@ -53,6 +54,7 @@ paths:
       summary: Identify the most important dependencies
       operationId: analysisDependencies
       parameters:
+        - $ref: "#/components/parameters/PaginationSpec"
         - name: sort
           description: >
             The sort order of the packages
@@ -77,15 +79,56 @@ paths:
 
 
 components:
+  parameters:
+    PaginationSpec:
+      name: PaginationSpec 
+      in: query
+      description: The pagination configuration for the query
+      required: false
+      schema:
+        type: object
+        properties:
+          First: 
+            type: integer
+          Before: 
+            type: string
+          After: 
+            type: string
   schemas:
     Purl:
       type: string
+    PageInfo:
+      type: object
+      required:
+        - HasNextPage
+        - HasPreviousPage
+        - StartCursor
+        - EndCursor
+      properties: 
+        HasNextPage:
+          type: boolean 
+        HasPreviousPage: 
+          type: boolean
+        StartCursor:
+          type: string
+        EndCursor:
+          type: string
+    PaginationInfo:
+      type: object
+      required:
+        - TotalCount 
+        - PageInfo
+      properties:
+        TotalCount: 
+          type: integer
+        PageInfo:
+          $ref: "#/components/schemas/PageInfo"
     Error:
       type: object
       required:
-        - message
+        - Message
       properties:
-        message:
+        Message:
           type: string
   responses:
     # intended for code 200
@@ -94,9 +137,17 @@ components:
       content:
         application/json:
           schema:
-            type: array
-            items:
-              $ref: "#/components/schemas/Purl"
+            type: object
+            required: 
+              - PaginationInfo
+              - PurlList
+            properties:
+              PaginationInfo:
+                $ref: "#/components/schemas/PaginationInfo"
+              PurlList:
+                type: array
+                items: 
+                  $ref: "#/components/schemas/Purl"
     # intended for code 400, client side error
     BadRequest:
       description: Bad request, such as from invalid or missing parameters
